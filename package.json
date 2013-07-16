@@ -1,0 +1,13 @@
+{
+  "name": "google-font-loader",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "repository": "",
+  "author": "",
+  "license": "BSD",
+  "dependencies": {
+    "superagent": "~0.14.9",
+    "lodash": "~1.3.1"
+  }
+}
