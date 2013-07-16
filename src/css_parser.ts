@@ -10,7 +10,7 @@ export interface CssFontDefinition {
 
 export class CssFontParser {
   private fontFacePattern: RegExp = /font-face[\S\s]*?\{([\S\s]*?)\}/g;
-  private localPattern: RegExp = /local\(['"](\S+?)['"]\)/g;
+  private localSpacelessPattern: RegExp = /local\(['"](\S+?)['"]\)/g;
   private urlPattern: RegExp = /url\((.*?)\)/g;
 
   parse(cssText: string): Array<CssFontDefinition> {
@@ -28,7 +28,7 @@ export class CssFontParser {
   }
 
   private parseCssFontDefinition(fontFace: string): CssFontDefinition {
-    var locals = this.match(this.localPattern, fontFace)
+    var locals = this.match(this.localSpacelessPattern, fontFace)
     var urls = this.match(this.urlPattern, fontFace)
     return {locals: locals, urls: urls}
   }
