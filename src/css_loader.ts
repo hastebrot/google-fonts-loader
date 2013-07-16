@@ -4,7 +4,7 @@ var _ = require("lodash")
 var fs = require("fs")
 var sa = require("superagent")
 
-export class CssFontDownloader {
+export class CssLoader {
   private userAgents: any = {
     // Internet Explorer 9.0.
     eot: "Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Trident/5.0)",
@@ -35,7 +35,7 @@ function main() {
       "Open+Sans:300italic,400italic,600italic,700italic,400,300,600,700,800"
   }
 
-  var provider = new CssFontDownloader()
+  var provider = new CssLoader()
   _.forEach(exampleUrls, (url, urlKey) => {
     var rootDir = "./tmp/css_examples"
     if (!fs.existsSync(rootDir)) {
@@ -55,3 +55,4 @@ function main() {
 if (require.main === module) {
   main()
 }
+

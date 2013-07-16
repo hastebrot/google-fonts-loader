@@ -5,24 +5,26 @@ var fs = require("fs")
 var http = require("http")
 var path = require("path")
 
-import cssParser = require("./css_parser")
+import _cssParser = require("./css_parser")
 
-function downloadFont(fontDefinition: cssParser.CssFontDefinition) {
-  var fontName = fontDefinition.locals[0]
-  var url = fontDefinition.urls[0]
+export class FontLoader {
+  downloadFonts(rootDir: string, fontDefinition: _cssParser.FontDefinition) {
+    var fontName = fontDefinition.locals[0]
+    var fontUrl = fontDefinition.urls[0]
 
-  var rootDir = "./tmp/css_fonts"
-  if (!fs.existsSync(rootDir)) {
-    fs.mkdirSync(rootDir)
+    var fileName = this.fetchFileName(fontName, fontUrl)
+    var filePath = rootDir + "/" + fileName
+    console.log(fileName)
+    this.downloadFont(fontUrl, filePath)
   }
 
-  var fileName = fontName + path.extname(url)
-  var filePath = rootDir + "/" + fileName
+  private fetchFileName(fontName: string, fontUrl: string) {
+    return fontName + path.extname(fontUrl)
+  }
 
-  if (!fs.existsSync(filePath)) {
-    console.log(filePath)
-    var file = fs.createWriteStream(filePath)
-    http.get(url, function(res) {
+  private downloadFont(sourceFontUrl: string, targetFilePath: string) {
+    var file = fs.createWriteStream(targetFilePath)
+    http.get(sourceFontUrl, function(res) {
       res.pipe(file)
     })
   }
@@ -32,10 +34,17 @@ function main() {
   var cssFile = "./tmp/css_examples/fonts-multi-ttf.css"
   var cssText = fs.readFileSync(cssFile).toString()
 
-  var fontParser = new cssParser.CssFontParser()
+  var rootDir = "./tmp/css_fonts"
+  if (!fs.existsSync(rootDir)) {
+    fs.mkdirSync(rootDir)
+  }
+
+  var fontParser = new _cssParser.CssParser()
+  var fontLoader = new FontLoader()
+
   var fontDefinitions = fontParser.parse(cssText)
-  _.forEach(fontDefinitions, (fontDefinition: cssParser.CssFontDefinition) => {
-    downloadFont(fontDefinition)
+  _.forEach(fontDefinitions, (fontDefinition: _cssParser.FontDefinition) => {
+    fontLoader.downloadFonts(rootDir, fontDefinition)
   })
 }
 

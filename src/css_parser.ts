@@ -3,21 +3,21 @@
 var _ = require("lodash")
 var fs = require("fs")
 
-export interface CssFontDefinition {
+export interface FontDefinition {
   locals: string[];
   urls: string[];
 }
 
-export class CssFontParser {
+export class CssParser {
   private fontFacePattern: RegExp = /font-face[\S\s]*?\{([\S\s]*?)\}/g;
   private localSpacelessPattern: RegExp = /local\(['"](\S+?)['"]\)/g;
   private urlPattern: RegExp = /url\((.*?)\)/g;
 
-  parse(cssText: string): Array<CssFontDefinition> {
+  parse(cssText: string): Array<FontDefinition> {
     var fontFaces = this.parseFontFaces(cssText)
     var fontDefinitions = []
     _.forEach(fontFaces, (fontFace: string) => {
-      var fontDefinition = this.parseCssFontDefinition(fontFace)
+      var fontDefinition = this.parseFontDefinition(fontFace)
       fontDefinitions.push(fontDefinition)
     })
     return fontDefinitions
@@ -27,7 +27,7 @@ export class CssFontParser {
     return this.match(this.fontFacePattern, cssText)
   }
 
-  private parseCssFontDefinition(fontFace: string): CssFontDefinition {
+  private parseFontDefinition(fontFace: string): FontDefinition {
     var locals = this.match(this.localSpacelessPattern, fontFace)
     var urls = this.match(this.urlPattern, fontFace)
     return {locals: locals, urls: urls}
@@ -49,9 +49,9 @@ function main() {
   var cssFile = "./tmp/css_examples/fonts-multi-woff.css"
   var cssText = fs.readFileSync(cssFile).toString()
 
-  var parser = new CssFontParser()
+  var parser = new CssParser()
   var fontDefinitions = parser.parse(cssText)
-  _.forEach(fontDefinitions, (fontDefinition: CssFontDefinition) => {
+  _.forEach(fontDefinitions, (fontDefinition: FontDefinition) => {
     console.log(fontDefinition)
   })
 }
