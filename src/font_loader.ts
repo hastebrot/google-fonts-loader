@@ -5,10 +5,9 @@ var fs = require("fs")
 var http = require("http")
 var path = require("path")
 
-import parser = require("./css_parser")
-var fixImport = function() { parser }
+import cssParser = require("./css_parser")
 
-function downloadFont(fontDefinition: parser.CssFontDefinition) {
+function downloadFont(fontDefinition: cssParser.CssFontDefinition) {
   var fontName = fontDefinition.locals[0]
   var url = fontDefinition.urls[0]
 
@@ -33,9 +32,9 @@ function main() {
   var cssFile = "./tmp/css_examples/fonts-multi-ttf.css"
   var cssText = fs.readFileSync(cssFile).toString()
 
-  var parser = new parser.CssFontParser()
-  var fontDefinitions = parser.parse(cssText)
-  _.forEach(fontDefinitions, (fontDefinition: parser.CssFontDefinition) => {
+  var fontParser = new cssParser.CssFontParser()
+  var fontDefinitions = fontParser.parse(cssText)
+  _.forEach(fontDefinitions, (fontDefinition: cssParser.CssFontDefinition) => {
     downloadFont(fontDefinition)
   })
 }
